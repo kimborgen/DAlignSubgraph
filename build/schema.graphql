@@ -1,0 +1,57 @@
+type User @entity {
+  id: Bytes!
+  answerAdded: [AnswerAdded!]! @derivedFrom(field: "submittedBy")
+  answersRated: [AnswersRated!]! @derivedFrom(field: "submittedBy")
+  promptCreated: [PromptCreated!]! @derivedFrom(field: "submittedBy")
+  promptQualityEvaluated: [PromptQualityEvaluated!]! @derivedFrom(field: "submittedBy")
+}
+
+type AnswersRated @entity {
+  id: Bytes!
+  promptId: Bytes!
+  winningAnswerId: AnswerAdded!
+  losingAnswerId: AnswerAdded!
+  newWinnerElo: BigInt!
+  newLoserElo: BigInt!
+  submittedBy: User! 
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+
+}
+
+type AnswerAdded @entity(immutable: true) {
+  id: Bytes!
+  promptId: Bytes!
+  answerId: Bytes!
+  content: String!
+  submittedBy: User!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  answersWinningTo: [AnswersRated!]! @derivedFrom(field: "winningAnswerId")
+  answersLostTo: [AnswersRated!]! @derivedFrom(field: "losingAnswerId")
+}
+
+type PromptCreated @entity(immutable: true) {
+  id: Bytes!
+  DAlign_id: Bytes!
+  content: String!
+  submittedBy: User!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+  qualityEvaluations: [PromptQualityEvaluated!]! @derivedFrom(field: "promptId")
+}
+
+type PromptQualityEvaluated @entity(immutable: true) {
+  id: Bytes!
+  promptId: PromptCreated!
+  newTotalQuality: BigInt!
+  newNumberOfQualityVotes: BigInt!
+  submittedBy: User!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+

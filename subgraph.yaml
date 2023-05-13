@@ -1,0 +1,33 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: DAlign
+    network: gnosis
+    source:
+      address: "0xEd46eF4abfAD67b4466B8A23F6ACa528D19A84B0"
+      abi: DAlign
+      startBlock: 27925852
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AnswerAdded
+        - AnswersRated
+        - PromptCreated
+        - PromptQualityEvaluated
+      abis:
+        - name: DAlign
+          file: ./abis/DAlign.json
+      eventHandlers:
+        - event: AnswerAdded(bytes32,bytes32,string,address)
+          handler: handleAnswerAdded
+        - event: AnswersRated(bytes32,bytes32,bytes32,int256,int256,address)
+          handler: handleAnswersRated
+        - event: PromptCreated(bytes32,string,address)
+          handler: handlePromptCreated
+        - event: PromptQualityEvaluated(bytes32,uint256,uint256,address)
+          handler: handlePromptQualityEvaluated
+      file: ./src/d-align.ts
